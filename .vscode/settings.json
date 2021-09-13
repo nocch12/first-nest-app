@@ -1,0 +1,5 @@
+{
+  "tslint.ignoreDefinitionFiles": false,
+  "typescript.tsdk": "node_modules/TypeScript/lib",
+  "js/ts.implicitProjectConfig.experimentalDecorators": true
+}
