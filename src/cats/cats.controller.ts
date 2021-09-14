@@ -10,16 +10,20 @@ import {
   Query,
   Redirect,
 } from '@nestjs/common';
+import { CatsService } from './cats.service';
 import { CreateCatDto } from './create-cat.dto';
 import { ListAllEntities } from './list-all-entities.dto';
 
 @Controller('cats')
 export class CatsController {
+  constructor(private catsService: CatsService) {}
+
   @Post()
   @HttpCode(204)
   @Header('Cache-Control', 'none')
   async create(@Body() CreateCatDto: CreateCatDto) {
     console.log(CreateCatDto.age);
+    this.catsService.create(CreateCatDto);
     return 'created cat';
   }
 
@@ -31,7 +35,7 @@ export class CatsController {
   //   }
   // }
   findAll(@Query() query: ListAllEntities) {
-    return `find all ${query.limit}`;
+    return this.catsService.findAll();
   }
 
   @Get(':id')
