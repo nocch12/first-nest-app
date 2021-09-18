@@ -7,24 +7,23 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   Redirect,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './create-cat.dto';
+import { CreateCatDto, UpdateCatDto } from './cat.dto';
 import { ListAllEntities } from './list-all-entities.dto';
 
 @Controller('cats')
 export class CatsController {
-  constructor(private catsService: CatsService) {}
+  constructor(private readonly catsService: CatsService) {}
 
   @Post()
-  @HttpCode(204)
   @Header('Cache-Control', 'none')
   async create(@Body() CreateCatDto: CreateCatDto) {
     console.log(CreateCatDto.age);
-    this.catsService.create(CreateCatDto);
-    return 'created cat';
+    return await this.catsService.create(CreateCatDto);
   }
 
   @Get()
@@ -34,17 +33,22 @@ export class CatsController {
   //     return { url: 'https://docs.nestjs.com/v5/' };
   //   }
   // }
-  findAll(@Query() query: ListAllEntities) {
-    return this.catsService.findAll();
+  async findAll(@Query() query: ListAllEntities) {
+    return await this.catsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `return #${id} cat`;
+  async findOne(@Param('id') id: number) {
+    return await this.catsService.find(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `deleted #${id}`;
+  async remove(@Param('id') id: number) {
+    return await this.catsService.delete(id);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateCatDto: UpdateCatDto) {
+    return await this.catsService.update(id, updateCatDto);
   }
 }
